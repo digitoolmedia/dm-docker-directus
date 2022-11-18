@@ -1,0 +1,76 @@
+version: '3.3'
+
+services:
+  directus:
+    image: directus/directus:9
+
+    volumes:
+      - ${PROJECT_NAME}_data:/directus/uploads
+      - ${PROJECT_NAME}_data:/directus/extensions
+    networks:
+      - ${PROJECT_NAME}_network
+    #depends_on: not working in docker swarm
+      #- cache
+      #- database
+    tty: true
+    stdin_open: true
+    environment:
+      KEY: '${UNIQUE_KEY}'
+      SECRET: '${UNIQUE_SECRET}'
+      DB_CLIENT: 'pg'
+      DB_HOST: 'database'
+      DB_PORT: '5432'
+      DB_DATABASE: '${PROJECT_NAME}'
+      DB_USER: '${DB_USER}'
+      DB_PASSWORD: '${DB_PASSWORD}'
+      CACHE_ENABLED: 'true'
+      CACHE_STORE: 'redis'
+      CACHE_REDIS: 'redis://cache:6379'
+      ADMIN_EMAIL: '${ADMIN_EMAIL}'
+      ADMIN_PASSWORD: '${ADMIN_PASSWORD}'
+      PUBLIC_URL: '${DIRECTUS_DOMAIN}'
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 3s
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints: 
+          - ${NODE_PLACEMENT}
+      labels:
+        traefik.enable: "true"
+        traefik.http.routers.${PROJECT_NAME}_router.rule: Host(`${DIRECTUS_DOMAIN}`)
+        traefik.http.routers.${PROJECT_NAME}_router.entrypoints: websecure
+        traefik.http.services.${PROJECT_NAME}_router.loadbalancer.server.port: 8055
+
+
+  database:
+    image: postgis/postgis:13-master
+    tty: true
+    stdin_open: true
+    volumes:
+      - ${PROJECT_NAME}_data:/var/lib/postgresql/data
+    networks:
+      - ${PROJECT_NAME}_network
+    environment:
+      POSTGRES_DB: '${PROJECT_NAME}'
+      POSTGRES_USER: '${DB_USER}'
+      POSTGRES_PASSWORD: '${DB_PASSWORD}'
+
+
+  cache:
+    container_name: cache
+    image: redis:6
+    networks:
+      - directus
+
+
+volumes:
+  ${PROJECT_NAME}_data:
+
+
+networks:
+  ${PROJECT_NAME}_network:
+  traefik-public:
+    external: true
