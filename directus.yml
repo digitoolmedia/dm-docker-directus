@@ -46,10 +46,6 @@ services:
         - "traefik.http.routers.${PROJECT_NAME}-websecure.entrypoints=websecure"
         - "traefik.http.routers.${PROJECT_NAME}-websecure.service=${PROJECT_NAME}-svc"
         - "traefik.http.services.${PROJECT_NAME}-svc.loadbalancer.server.port=8055"
-        - "traefik.http.routers.${PROJECT_NAME}-web.rule=Host(`${DIRECTUS_DOMAIN}`)"
-        - "traefik.http.routers.${PROJECT_NAME}-web.entrypoints=web"
-        - "traefik.http.routers.${PROJECT_NAME}-web.tls=false"
-        - "traefik.http.routers.${PROJECT_NAME}-web.service=${PROJECT_NAME}-svc"
 
 
   database:
