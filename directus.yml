@@ -5,10 +5,10 @@ services:
     image: directus/directus:9
 
     volumes:
-      - ${PROJECT_NAME}_data:/directus/uploads
-      - ${PROJECT_NAME}_data:/directus/extensions
+      - directus_data:/directus/uploads
+      - directus_data:/directus/extensions
     networks:
-      - ${PROJECT_NAME}_network
+      - directus_network
     #depends_on: not working in docker swarm
       #- cache
       #- database
@@ -20,7 +20,7 @@ services:
       DB_CLIENT: 'pg'
       DB_HOST: 'database'
       DB_PORT: '5432'
-      DB_DATABASE: '${PROJECT_NAME}_db'
+      DB_DATABASE: '${PROJECT_NAME}-db'
       DB_USER: '${DB_USER}'
       DB_PASSWORD: '${DB_PASSWORD}'
       CACHE_ENABLED: 'true'
@@ -41,7 +41,6 @@ services:
       labels:
         traefik.enable: "true"
         traefik.http.routers.${PROJECT_NAME}_router.rule: Host(`${DIRECTUS_DOMAIN}`)
-        traefik.http.routers.${PROJECT_NAME}_router.entrypoints: websecure
         traefik.http.services.${PROJECT_NAME}_router.loadbalancer.server.port: 8055
 
 
@@ -50,11 +49,11 @@ services:
     tty: true
     stdin_open: true
     volumes:
-      - ${PROJECT_NAME}_data:/var/lib/postgresql/data
+      - directus_db:/var/lib/postgresql/data
     networks:
-      - ${PROJECT_NAME}_network
+      - directus_network
     environment:
-      POSTGRES_DB: '${PROJECT_NAME}_db'
+      POSTGRES_DB: '${PROJECT_NAME}-db'
       POSTGRES_USER: '${DB_USER}'
       POSTGRES_PASSWORD: '${DB_PASSWORD}'
 
@@ -63,14 +62,15 @@ services:
     container_name: cache
     image: redis:6
     networks:
-      - directus
+      - directus_network
 
 
 volumes:
-  ${PROJECT_NAME}_data:
+  directus_data:
+  directus_db:
 
 
 networks:
-  ${PROJECT_NAME}_network:
+  directus_network:
   traefik-public:
     external: true
