@@ -5,8 +5,8 @@ services:
     image: directus/directus:9
 
     volumes:
-      - directus_data:/directus/uploads
-      - directus_data:/directus/extensions
+      - directus_uploads:/directus/uploads
+      - directus_extensions:/directus/extensions
     networks:
       - directus_network
     #depends_on: not working in docker swarm
@@ -40,8 +40,8 @@ services:
           - ${NODE_PLACEMENT}
       labels:
         traefik.enable: "true"
-        traefik.http.routers.${PROJECT_NAME}_router.rule: Host(`${DIRECTUS_DOMAIN}`)
-        traefik.http.services.${PROJECT_NAME}_router.loadbalancer.server.port: 8055
+        traefik.http.routers.directus-router.rule: Host(`${DIRECTUS_DOMAIN}`)
+        traefik.http.services.directus-router.loadbalancer.server.port: 8055
 
 
   database:
@@ -66,7 +66,8 @@ services:
 
 
 volumes:
-  directus_data:
+  directus_uploads:
+  directus_extensions:
   directus_db:
 
 
