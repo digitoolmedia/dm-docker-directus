@@ -5,10 +5,11 @@ services:
     image: directus/directus:9
 
     volumes:
-      - directus_uploads:/directus/uploads
-      - directus_extensions:/directus/extensions
+      - directus-uploads:/directus/uploads
+      - directus-extensions:/directus/extensions
     networks:
-      - directus_network
+      - directus-network
+      - traefik-public
     #depends_on: not working in docker swarm
       #- cache
       #- database
@@ -28,7 +29,7 @@ services:
       CACHE_REDIS: 'redis://cache:6379'
       ADMIN_EMAIL: '${ADMIN_EMAIL}'
       ADMIN_PASSWORD: '${ADMIN_PASSWORD}'
-      PUBLIC_URL: '${DIRECTUS_DOMAIN}'
+      PUBLIC_URL: 'https://${DIRECTUS_DOMAIN}'
     deploy:
       restart_policy:
         condition: on-failure
@@ -39,9 +40,14 @@ services:
         constraints: 
           - ${NODE_PLACEMENT}
       labels:
-        traefik.enable: "true"
-        traefik.http.routers.directus-router.rule: Host(`${DIRECTUS_DOMAIN}`)
-        traefik.http.services.directus-router.loadbalancer.server.port: 8055
+        - "traefik.enable=true"
+        - "traefik.http.routers.${PROJECT_NAME}-websecure.rule=Host(`${DIRECTUS_DOMAIN}`)"
+        - "traefik.http.routers.${PROJECT_NAME}-websecure.tls.certresolver=letsencrypt"
+        - "traefik.http.routers.${PROJECT_NAME}-websecure.service=${PROJECT_NAME}-svc"
+        - "traefik.http.services.${PROJECT_NAME}-svc.loadbalancer.server.port=8055"
+        - "traefik.http.routers.${PROJECT_NAME}-web.rule=Host(`${DIRECTUS_DOMAIN}`)"
+        - "traefik.http.routers.${PROJECT_NAME}-web.tls=false"
+        - "traefik.http.routers.${PROJECT_NAME}-web.service=${PROJECT_NAME}-svc"
 
 
   database:
@@ -49,9 +55,9 @@ services:
     tty: true
     stdin_open: true
     volumes:
-      - directus_db:/var/lib/postgresql/data
+      - directus-db:/var/lib/postgresql/data
     networks:
-      - directus_network
+      - directus-network
     environment:
       POSTGRES_DB: '${PROJECT_NAME}-db'
       POSTGRES_USER: '${DB_USER}'
@@ -59,19 +65,18 @@ services:
 
 
   cache:
-    container_name: cache
     image: redis:6
     networks:
-      - directus_network
+      - directus-network
 
 
 volumes:
-  directus_uploads:
-  directus_extensions:
-  directus_db:
+  directus-uploads:
+  directus-extensions:
+  directus-db:
 
 
 networks:
-  directus_network:
+  directus-network:
   traefik-public:
     external: true
