@@ -31,6 +31,8 @@ services:
       ADMIN_PASSWORD: '${ADMIN_PASSWORD}'
       PUBLIC_URL: 'https://${DIRECTUS_DOMAIN}'
       ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION: '8256'
+      CORS_ENABLED: "true"
+      CORS_ORIGIN: "true"
     deploy:
       restart_policy:
         condition: on-failure
