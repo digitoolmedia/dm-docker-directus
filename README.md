@@ -9,3 +9,10 @@ A good and practical way to generate them would be to use:
 
 ## Directus config reference:
 https://docs.directus.io/self-hosted/config-options#general
+
+# Commands
+## backup database
+    docker exec -t your-db-container mkdir -p /var/lib/postgresql/data/pg_dumps && pg_dumpall -c -U ${DB_USER} | gzip > /var/lib/postgresql/data/pg_dumps/$(date +"%Y-%m-%d_%H-%M-%S")_db-dump.sql.gz
+
+## restore database (needs work)
+    gunzip < your_dump.sql.gz | docker exec -i your-db-container psql -U ${DB_USER} -d ${PROJECT_NAME}-db
