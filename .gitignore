@@ -1,2 +1,33 @@
-*.env
-!.env
+# .gitignore v1.1.2
+# https://gist.github.com/Sandros94/7f3dc1539c8f5905c495aa1bb417589c
+
+# Nuxt dev/build outputs
+.output
+.nuxt
+.nitro
+.cache
+dist
+
+# Node dependencies
+node_modules
+
+# Local env files
+.env
+.env.*
+!.env.example
+
+# Logs
+logs
+*.log
+
+# VSCode
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# Misc
+.DS_Store
+.AppleDouble
+.LSOverride
+.fleet
+.idea
