@@ -35,3 +35,7 @@ logs
 
 # Project specific
 /.directus
+docker-compose*.yml
+!docker-compose.caddy.yml
+!docker-compose.dev.yml
+!docker-compose.traefik.yml
