@@ -1,3 +1,11 @@
+# What is this repo?
+
+This started as a personal deploy reproduction for testing out Directus back in the day. But as time went by I optimized as much as possible providing a somewhat opinionated fresh deployment for Directus.
+
+Hopefully, one day, I'll be able to automate it with code-first ([follow the current status here](https://github.com/directus/directus/discussions/13041)) deployments creating a set of boilerplates for various use cases.
+
+Feel free to open up issues or PRs
+
 # Directus deploy
 
 Fill your env variables, and `compose up` the version you need.
