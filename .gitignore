@@ -1,4 +1,4 @@
-# .gitignore v1.1.2
+# .gitignore v1.2.0
 # https://gist.github.com/Sandros94/7f3dc1539c8f5905c495aa1bb417589c
 
 # Nuxt dev/build outputs
@@ -10,6 +10,7 @@ dist
 
 # Node dependencies
 node_modules
+.pnpm-store
 
 # Local env files
 .env
@@ -31,3 +32,6 @@ logs
 .LSOverride
 .fleet
 .idea
+
+# Project specific
+/.directus
