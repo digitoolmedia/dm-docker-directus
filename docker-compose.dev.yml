@@ -1,19 +1,18 @@
-version: '3.4'
-
-name: ${PROJECT_NAME}
+version: '3.8'
+name: 'directus-dev'
 
 services:
   directus:
-    image: directus/directus:latest
+    image: directus/directus:10.8
 
     #user: node
     #command: sh -c "node /directus/cli.js bootstrap && node /directus/cli.js schema apply --yes /directus/schemas/schema-second.yml && node /directus/cli.js start"
 
-    #volumes:
+    volumes:
+      - directus-uploads:/directus/uploads
+      - directus-extensions:/directus/extensions
       #- ./directus/schemas:/directus/schemas:ro
       #- ./directus/migrations:/directus/extensions/migrations:ro
-      #- directus-uploads:/directus/uploads
-      #- directus-extensions:/directus/extensions
 
     networks:
       - directus-network
@@ -23,19 +22,19 @@ services:
     tty: true
     stdin_open: true
     environment:
-      KEY: '${UNIQUE_KEY}'
-      SECRET: '${UNIQUE_SECRET}'
+      KEY: '${UNIQUE_KEY:-UNIQUE_KEY}'
+      SECRET: '${UNIQUE_SECRET:-UNIQUE_SECRET}'
       DB_CLIENT: 'pg'
       DB_HOST: 'database'
       DB_PORT: '5432'
-      DB_DATABASE: '${DB_NAME}'
-      DB_USER: '${DB_USER}'
-      DB_PASSWORD: '${DB_PASSWORD}'
+      DB_DATABASE: '${DB_NAME:-directus}'
+      DB_USER: '${DB_USER:-directus}'
+      DB_PASSWORD: '${DB_PASSWORD:-directus}'
       DB_POOL__MIN: '0'
-      ADMIN_EMAIL: '${ADMIN_EMAIL}'
-      ADMIN_PASSWORD: '${ADMIN_PASSWORD}'
+      ADMIN_EMAIL: '${ADMIN_EMAIL:-admin@example.com}'
+      ADMIN_PASSWORD: '${ADMIN_PASSWORD:-password}'
       ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION: '8256'
-      CACHE_ENABLED: 'true'
+      CACHE_ENABLED: 'false'
       CACHE_STORE: 'redis'
       REDIS: 'redis://cache:6379'
       # CACHE_AUTO_PURGE is for recreating the cache every time the db content is update/created/deleted - this will change in the future
@@ -44,6 +43,7 @@ services:
       CORS_ORIGIN: "true"
       CONTENT_SECURITY_POLICY_DIRECTIVES__FRAME_SRC: "www.google.com google.com www.youtube.com youtube.com"
       CONTENT_SECURITY_POLICY_DIRECTIVES__FRAME_ANCESTORS: "array:http://localhost:*,self"
+      EXTENSIONS_AUTO_RELOAD: 'true'
 
     depends_on:
       - database
@@ -54,15 +54,15 @@ services:
     image: postgis/postgis:13-master
     tty: true
     stdin_open: true
-    #volumes:
-      #- directus-db:/var/lib/postgresql/data
-      #- db-dumps:/db-dumps
+    volumes:
+      - directus-db:/var/lib/postgresql/data
+      #- ./.directus/database-dumps:/db_dumps
     networks:
       - directus-network
     environment:
-      POSTGRES_DB: '${DB_NAME}'
-      POSTGRES_USER: '${DB_USER}'
-      POSTGRES_PASSWORD: '${DB_PASSWORD}'
+      POSTGRES_DB: '${DB_NAME:-directus}'
+      POSTGRES_USER: '${DB_USER:-directus}'
+      POSTGRES_PASSWORD: '${DB_PASSWORD:-directus}'
 
 
   cache:
@@ -73,27 +73,11 @@ services:
       - database
 
 
-  #filebrowser:
-    #image: hurlenko/filebrowser
-    #volumes:
-      #- /etc/localtime:/etc/localtime:ro
-      #- directus-uploads:/data/directus/uploads
-      #- db-dumps:/data/directus/db-dumps
-      #- filebrowser-config:/config
-    #ports:
-      #- 8080:8080
-    #depends_on:
-      #- directus
-      #- database
-
-
-#volumes:
-  #nuxt-content:
-  #directus-uploads:
-  #directus-extensions:
-  #directus-db:
+volumes:
+  directus-db:
+  directus-uploads:
+  directus-extensions:
   #db-dumps:
-  #filebrowser-config:
 
 
 networks:

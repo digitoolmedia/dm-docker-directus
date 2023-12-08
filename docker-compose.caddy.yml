@@ -2,7 +2,7 @@ version: '3.4'
 
 services:
   directus:
-    image: directus/directus:10
+    image: directus/directus:10.8
 
     volumes:
       - /etc/localtime:/etc/localtime:ro
@@ -113,8 +113,6 @@ volumes:
   directus-db:
   db-dumps:
   filebrowser-config:
-  #nuxt-content:
-  nuxt-public:
 
 
 networks:
