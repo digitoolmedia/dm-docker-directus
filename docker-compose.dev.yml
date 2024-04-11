@@ -3,7 +3,7 @@ name: 'directus-dev'
 
 services:
   directus:
-    image: directus/directus:10.8
+    image: directus/directus:10
 
     #user: node
     #command: sh -c "node /directus/cli.js bootstrap && node /directus/cli.js schema apply --yes /directus/schemas/schema-second.yml && node /directus/cli.js start"
