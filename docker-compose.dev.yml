@@ -10,7 +10,7 @@ services:
 
     volumes:
       - directus-uploads:/directus/uploads
-      - ./directus/extensions:/directus/extensions
+      - ./.directus/extensions:/directus/extensions
       #- ./directus/schemas:/directus/schemas:ro
       #- ./directus/migrations:/directus/extensions/migrations:ro
 
@@ -45,6 +45,8 @@ services:
       CONTENT_SECURITY_POLICY_DIRECTIVES__FRAME_ANCESTORS: "array:http://localhost:*,self"
       EXTENSIONS_AUTO_RELOAD: 'true'
       WEBSOCKETS_ENABLED: 'true'
+      # Force polling for file changes in extensions while on Windows
+      CHOKIDAR_USEPOLLING: true
 
     depends_on:
       - database
