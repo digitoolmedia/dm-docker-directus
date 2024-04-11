@@ -10,7 +10,7 @@ services:
 
     volumes:
       - directus-uploads:/directus/uploads
-      - directus-extensions:/directus/extensions
+      - ./directus/extensions:/directus/extensions
       #- ./directus/schemas:/directus/schemas:ro
       #- ./directus/migrations:/directus/extensions/migrations:ro
 
@@ -77,7 +77,7 @@ services:
 volumes:
   directus-db:
   directus-uploads:
-  directus-extensions:
+  #directus-extensions:
   #db-dumps:
 
 
